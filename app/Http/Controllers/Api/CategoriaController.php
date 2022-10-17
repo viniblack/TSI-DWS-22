@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StoreCategoriaRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use App\Http\Resources\CategoriaResource;
 use App\Models\Categoria;
@@ -16,9 +17,21 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $categorias = Categoria::all();
+        // Captura a coluna para ordenação
+        $sortParameter = $request->input('ordenacao', 'nome_da_categoria');
+        $sortDirection = Str::startsWith($sortParameter, '-') ? 'desc':'asc';
+        $sortColumn = ltrim($sortParameter, '-');
+
+        // Determina se faz a query
+        if($sortColumn == 'nome_da_categoria'){
+            $categorias = Categoria::orderBy('nomedacategoria', $sortDirection)->get();
+        }
+        else{
+            $categorias = Categoria::all();
+        }
 
         return response() -> json([
             'status' => 200,
