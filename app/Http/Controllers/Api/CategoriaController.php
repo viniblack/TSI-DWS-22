@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\StoreCategoriaRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
-use App\Http\Resources\CategoriaResource;
 use App\Models\Categoria;
+use App\Http\Resources\CategoriaResource;
+use App\Http\Requests\StoreCategoriaRequest;
 
 class CategoriaController extends Controller
 {
@@ -17,26 +16,14 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         $categorias = Categoria::all();
-        // Captura a coluna para ordenação
-        $sortParameter = $request->input('ordenacao', 'nome_da_categoria');
-        $sortDirection = Str::startsWith($sortParameter, '-') ? 'desc':'asc';
-        $sortColumn = ltrim($sortParameter, '-');
-
-        // Determina se faz a query
-        if($sortColumn == 'nome_da_categoria'){
-            $categorias = Categoria::orderBy('nomedacategoria', $sortDirection)->get();
-        }
-        else{
-            $categorias = Categoria::all();
-        }
 
         return response() -> json([
             'status' => 200,
-            'mensagem' => __("categoria.listreturn"),
-            'categorias' => CategoriaResource::collection($categorias)
+            'mensagem' => 'Lista de categorias retornada',
+            'mensagem' => CategoriaResource::collection($categorias)
         ], 200);
     }
 
@@ -58,20 +45,17 @@ class CategoriaController extends Controller
      */
     public function store(StoreCategoriaRequest $request)
     {
-        //cria o objeto
         $categoria = new Categoria();
 
-        // Transfere os valores
         $categoria->nomedacategoria = $request->nome_da_categoria;
 
-        // Salva
         $categoria->save();
 
-        return response() -> json([
+        return response()-> json ([
             'status' => 200,
-            'mensagem' => __("categoria.created"),
-            'categoria' => new CategoriaResource($categoria)
-        ],200);
+            'mensagem' => 'Categoria criada',
+            'categoria' => new CategoriaResource($categoria),
+        ], 200);
     }
 
     /**
@@ -82,12 +66,7 @@ class CategoriaController extends Controller
      */
     public function show(Categoria $categoria)
     {
-        $categoria = Categoria::find($categoria->pkcategoria);
-
-        return response() -> json([
-            'status' => 200,
-            'mensagem' => __("categoria.returned"),
-        ],200);
+        //
     }
 
     /**
@@ -114,10 +93,10 @@ class CategoriaController extends Controller
         $categoria->nomedacategoria = $request->nome_da_categoria;
         $categoria->update();
 
-        return response() -> json([
+        return response()-> json ([
             'status' => 200,
-            'mensagem' => __("categoria.updated"),
-        ],200);
+            'mensagem' => 'Categoria atualizada',
+        ], 200);
     }
 
     /**
@@ -130,9 +109,9 @@ class CategoriaController extends Controller
     {
         $categoria->delete();
 
-        return response() -> json([
+        return response()-> json ([
             'status' => 200,
-            'mensagem' => __("categoria.deleted"),
-        ],200);
+            'mensagem' => 'Categoria apagada',
+        ], 200);
     }
 }

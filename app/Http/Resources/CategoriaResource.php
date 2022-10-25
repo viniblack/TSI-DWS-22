@@ -14,12 +14,14 @@ class CategoriaResource extends JsonResource
      */
     public function toArray($request)
     {
-        // mantido para documentação
-        // return parent::toArray($request)
+        return parent::toArray($request);
 
         return [
+
             'id' => $this->pkcategoria,
             'nome_da_categoria' => $this->nomedacategoria
         ];
     }
+
+
 }
